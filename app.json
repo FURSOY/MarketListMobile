@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "MarketList",
+    "slug": "marketlist",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "scheme": "marketlistapp",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.yourcompany.marketlistapp"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.yourcompany.marketlistapp"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b52ca57a-a878-4ce9-994c-977b22eb741a"
+      }
+    }
+  }
+}
