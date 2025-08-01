@@ -1,4 +1,3 @@
-// src/api/marketList.js
 import apiClient from './client';
 
 const createList = (name) => apiClient.post('/lists', { name });

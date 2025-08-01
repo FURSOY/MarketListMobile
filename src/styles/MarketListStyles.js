@@ -1,8 +1,10 @@
 import { StyleSheet } from 'react-native';
-import { fontWeights } from '../config/typography';
 
-export const createAuthStyles = (currentTheme) => {
+export const createMarketListStyles = (currentTheme) => {
     return StyleSheet.create({
-
-    });
+        container: {
+            flex: 1,
+            backgroundColor: currentTheme.colors.background,
+        }
+    })
 }

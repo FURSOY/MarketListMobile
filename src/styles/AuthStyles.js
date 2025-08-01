@@ -5,7 +5,6 @@ export const createAuthStyles = (currentTheme) => {
     return StyleSheet.create({
         container: {
             flex: 1,
-            justifyContent: 'center',
             alignItems: 'center',
             padding: currentTheme.spacing.lg,
             backgroundColor: currentTheme.colors.background,
