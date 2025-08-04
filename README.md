@@ -1,0 +1,1 @@
+okudum kabul ediyom
