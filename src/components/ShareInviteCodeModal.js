@@ -16,8 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Clipboard from 'expo-clipboard';
 import axios from 'axios';
 
-// Uygulamanızın deep link base URL'si (app.json'daki scheme ile aynı olmalı)
-const APP_DEEPLINK_BASE_URL = 'marketlistapp://'; // app.json'daki scheme değerinizle eşleştirin
+const APP_DEEPLINK_BASE_URL = 'marketlistapp://';
 
 function ShareInviteCodeModal({ isVisible, onClose, listId, listName }) {
     const { userToken, API_BASE_URL } = useAuth();
