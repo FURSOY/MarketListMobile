@@ -4,5 +4,7 @@ export const spacing = {
     md: 16,  // Medium
     ld: 18,
     lg: 24,  // Large
-    xl: 32,  // Extra Large
+    xl: 32,
+    xxl: 40,
+    xxxl: 32,
 };

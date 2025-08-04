@@ -1,10 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import { useTheme } from '../../context/ThemeContext';
 import marketListApi from '../../api/marketList';
 import { createMarketListStyles } from '../../styles/MarketListStyles';
 import { Ionicons } from '@expo/vector-icons';
 import CreateListModal from '../../components/CreateListModal';
+import EditListModal from '../../components/EditListModal';
+import MembersModal from '../../components/MembersModal';
+import ListOptionsMenu from '../../components/ListOptionsMenu';
+import { useAuth } from '../../context/AuthContext';
+import Entypo from '@expo/vector-icons/Entypo';
+import AddMemberModal from '../../components/AddMemberModal'; // doğru yolu yaz
 
 function HomeScreen({ navigation }) {
     const { currentTheme } = useTheme();
@@ -14,6 +20,23 @@ function HomeScreen({ navigation }) {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [createMenuShow, setCreateMenuShow] = useState(false);
+    const [editMenuShow, setEditMenuShow] = useState(false);
+    const [selectedList, setSelectedList] = useState(null);
+    const [optionsMenuShow, setOptionsMenuShow] = useState(false);
+    const [membersModalVisible, setMembersModalVisible] = useState(false);
+    const [selectedListId, setSelectedListId] = useState(null);
+    const [addMemberModalVisible, setAddMemberModalVisible] = useState(false);
+
+
+    const { userData } = useAuth();
+
+
+    const handleMembers = useCallback((list) => {
+        setSelectedListId(list.id);
+        setMembersModalVisible(true);
+        setOptionsMenuShow(false);
+    }, []);
+
 
     const loadLists = useCallback(async () => {
         setLoading(true);
@@ -31,85 +54,138 @@ function HomeScreen({ navigation }) {
 
     const onRefresh = useCallback(async () => {
         setRefreshing(true);
-        try {
-            await loadLists();
-        } catch (error) {
-            console.error('Liste yenilenemedi:', error.message);
-        } finally {
-            setRefreshing(false);
-        }
+        await loadLists();
+        setRefreshing(false);
     }, [loadLists]);
 
-    const toggleCreateMenu = useCallback(() => {
-        setCreateMenuShow(prev => !prev);
+    const handleCreateModalOpen = useCallback(() => {
+        setCreateMenuShow(true);
     }, []);
 
-    const handleModalClose = useCallback(() => {
+    const handleCreateModalClose = useCallback(() => {
         setCreateMenuShow(false);
         loadLists();
     }, [loadLists]);
 
-    // YENİ: Listeye tıklandığında detay sayfasına gitme
-    const handleListPress = (list) => {
+    const handleListPress = useCallback((list) => {
         navigation.navigate('MarketListDetail', { listId: list.id, listName: list.name });
-    };
+    }, [navigation]);
+
+    const handleOptionsMenuOpen = useCallback((item) => {
+        setSelectedList(item);
+        setOptionsMenuShow(true);
+    }, []);
+
+    const handleOptionsMenuClose = useCallback(() => {
+        setOptionsMenuShow(false);
+        // Menü kapandığında selectedList'i null yapmamız gerekiyor,
+        // ancak bu işlemi EditListModal açılmadan önce yaparsak sorun oluşur.
+        // Bu yüzden, edit modalı açılınca bu işlemi yapmayacağız.
+        // Yeni yaklaşımda bu durum otomatik yönetilecek.
+    }, []);
+
+    // GÜNCELLENDİ: Edit işlemi için yeni bir fonksiyon
+    const handleEditList = useCallback((list) => {
+        setSelectedList(list); // Hangi listenin düzenleneceğini belirle
+        setEditMenuShow(true); // Edit modalını aç
+        setOptionsMenuShow(false); // ListOptionsMenu'yi kapat
+    }, []);
+
+    const handleEditModalClose = useCallback(() => {
+        setEditMenuShow(false);
+        setSelectedList(null); // Modal kapandığında selectedList'i temizle
+        loadLists();
+    }, [loadLists]);
+
+    const handleDeleteList = useCallback(() => {
+        loadLists();
+    }, [loadLists]);
 
     useEffect(() => {
         loadLists();
         navigation.setOptions({
             headerRight: () => (
-                <TouchableOpacity
-                    style={{ marginRight: 15 }}
-                    onPress={toggleCreateMenu}
-                >
-                    <Ionicons
-                        name="add-circle-outline"
-                        size={30}
-                        color={currentTheme.colors.primary}
-                    />
+                <TouchableOpacity style={{ marginRight: 15 }} onPress={handleCreateModalOpen}>
+                    <Ionicons name="add-circle-outline" size={30} color={currentTheme.colors.primary} />
                 </TouchableOpacity>
             ),
         });
-    }, [navigation, currentTheme, toggleCreateMenu, loadLists]);
+    }, [navigation, currentTheme, handleCreateModalOpen, loadLists]);
 
     const renderItem = ({ item }) => {
+        const isOwner = userData && item.ownerId === userData.id;
+        const isMenuOpen = optionsMenuShow && selectedList?.id === item.id;
+
         return (
-            <TouchableOpacity
-                style={styles.listItem}
-                onPress={() => handleListPress(item)} // YENİ: onPress olayı
-            >
-                <Text style={styles.listItemText}>{item.name}</Text>
-            </TouchableOpacity>
+            <View>
+                <TouchableOpacity style={styles.listItemContainer} onPress={() => handleListPress(item)} activeOpacity={0.8}>
+                    <Text style={styles.listItemText}>{item.name}</Text>
+                    {isOwner && (
+                        <TouchableOpacity style={styles.optionsButton} onPress={() => isMenuOpen ? handleOptionsMenuClose() : handleOptionsMenuOpen(item)}>
+                            <Entypo name="dots-three-horizontal" size={24} color={currentTheme.colors.textPrimary} />
+                        </TouchableOpacity>
+                    )}
+                </TouchableOpacity>
+                {isMenuOpen && (
+                    <ListOptionsMenu
+                        list={item}
+                        onEdit={handleEditList}
+                        onDelete={handleDeleteList}
+                        onClose={handleOptionsMenuClose}
+                        onMembers={handleMembers}
+                    />
+                )}
+            </View>
         );
     };
 
     return (
-        <View style={styles.container}>
-            {loading ? (
-                <ActivityIndicator size="large" color={currentTheme.colors.PrimaryText} />
-            ) : lists.length === 0 ? (
-                <Text style={styles.emptyText}>Liste bulunmamakta</Text>
-            ) : (
-                <FlatList
-                    data={lists}
-                    keyExtractor={(item, index) => (item && item.id) ? item.id.toString() : index.toString()}
-                    renderItem={renderItem}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={refreshing}
-                            onRefresh={onRefresh}
-                            colors={[currentTheme.colors.textPrimary]}
-                            tintColor={currentTheme.colors.textPrimary}
-                        />
-                    }
+        <TouchableWithoutFeedback onPress={handleOptionsMenuClose}>
+            <View style={styles.container}>
+                {loading ? (
+                    <ActivityIndicator size="large" color={currentTheme.colors.textPrimary} />
+                ) : lists.length === 0 ? (
+                    <Text style={styles.emptyText}>Liste bulunmamakta</Text>
+                ) : (
+                    <FlatList
+                        data={lists}
+                        keyExtractor={(item) => item.id.toString()}
+                        renderItem={renderItem}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={refreshing}
+                                onRefresh={onRefresh}
+                                colors={[currentTheme.colors.textPrimary]}
+                                tintColor={currentTheme.colors.textPrimary}
+                            />
+                        }
+                    />
+                )}
+                <CreateListModal
+                    visible={createMenuShow}
+                    onClose={handleCreateModalClose}
+                    onListCreated={loadLists}
                 />
-            )}
-            <CreateListModal
-                visible={createMenuShow}
-                onClose={handleModalClose}
-                onListCreated={loadLists}
-            />
-        </View>
+                <EditListModal
+                    visible={editMenuShow}
+                    onClose={handleEditModalClose}
+                    listToEdit={selectedList}
+                    onListUpdated={loadLists}
+                />
+                <MembersModal
+                    visible={membersModalVisible}
+                    onClose={() => setMembersModalVisible(false)}
+                    listId={selectedListId}
+                    list={selectedList}
+                    onAddMember={() => setAddMemberModalVisible(true)}
+                />
+                <AddMemberModal
+                    visible={addMemberModalVisible}
+                    onClose={() => setAddMemberModalVisible(false)}
+                    listId={selectedListId}
+                />
+            </View>
+        </TouchableWithoutFeedback>
     );
 }
 

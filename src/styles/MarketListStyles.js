@@ -6,32 +6,26 @@ export const createMarketListStyles = (currentTheme) => {
             flex: 1,
             backgroundColor: currentTheme.colors.background,
         },
-        listContent: { // Yeni stil: Listelerin içeriğini sarmalar
-            flex: 1,
-        },
-        listItem: {
-            padding: 15,
+        listItemContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingRight: 15,
+            paddingLeft: 15,
             borderBottomWidth: 1,
             borderBottomColor: currentTheme.colors.border,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            paddingVertical: 15,
         },
-        itemInfo: {
-            flexDirection: 'column',
+        listItem: {
+            flex: 1,
+            padding: 15,
         },
         listItemText: {
             fontSize: 18,
             color: currentTheme.colors.textPrimary,
-            flex: 1, // Metnin tüm alanı kaplamasını sağlar
         },
-        itemQuantityText: {
-            fontSize: 14,
-            color: currentTheme.colors.textSecondary,
-        },
-        purchasedText: {
-            textDecorationLine: 'line-through',
-            color: currentTheme.colors.textSecondary,
+        optionsButton: {
+            padding: 10,
         },
         emptyText: {
             textAlign: 'center',

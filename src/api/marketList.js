@@ -3,9 +3,12 @@ import apiClient from './client';
 const createList = (name) => apiClient.post('/lists', { name });
 const getUserLists = () => apiClient.get('/lists');
 const getListDetails = (listId) => apiClient.get(`/lists/${listId}`);
-const inviteUserToList = (listId, email) => apiClient.post(`/lists/${listId}/invite`, { email });
+const getListCode = (listId) => apiClient.post(`/lists/${listId}/invite`);
+const updateList = (listId, data) => apiClient.patch(`/lists/${listId}`, data);
+const deleteList = (listId) => apiClient.delete(`/lists/${listId}`);
 const joinListByInviteCode = (inviteCode) => apiClient.post(`/lists/join/${inviteCode}`);
 const removeListMember = (listId, memberId) => apiClient.delete(`/lists/${listId}/members/${memberId}`);
+const getListMembers = (listId) => apiClient.get(`/lists/${listId}/members`);
 
 const addListItem = (listId, name, quantity = 1) => apiClient.post(`/lists/${listId}/items`, { name, quantity });
 const updateListItem = (listId, itemId, updates) => apiClient.patch(`/lists/${listId}/items/${itemId}`, updates);
@@ -17,7 +20,7 @@ export default {
     createList,
     getUserLists,
     getListDetails,
-    inviteUserToList,
+    getListCode,
     joinListByInviteCode,
     removeListMember,
     addListItem,
@@ -25,4 +28,7 @@ export default {
     markItemAsPurchased,
     markItemAsUnpurchased,
     removeListItem,
+    updateList,
+    deleteList,
+    getListMembers
 };
