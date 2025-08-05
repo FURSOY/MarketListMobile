@@ -1,10 +1,11 @@
+// App.js
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import RootNavigator from './navigation/RootNavigator';
-import * as Linking from 'expo-linking'; // <-- Burayı EKLE!
-import { Text } from 'react-native'; // Fallback component'i için (isteğe bağlı)
+import * as Linking from 'expo-linking';
+import { Text } from 'react-native';
 
 export default function App() {
   const prefix = Linking.createURL('/');
@@ -13,41 +14,47 @@ export default function App() {
     prefixes: [prefix],
     config: {
       screens: {
-        JoinList: 'joinList/:code', // Doğrudan RootNavigator içindeki ekran
-
-        App: {
+        // RootNavigator'ın ana ekranı buraya geliyor
+        Root: {
+          path: '/', // Normal açılışta RootNavigator'a yönlensin
           screens: {
-            Home: {
+            App: {
               screens: {
-                HomeMain: 'home',
-                MarketListDetail: 'lists/:listId',
+                Home: {
+                  screens: {
+                    HomeMain: 'home',
+                    MarketListDetail: 'lists/:listId',
+                  },
+                },
+                Profile: {
+                  screens: {
+                    ProfileMain: 'profile',
+                  },
+                },
               },
             },
-            Profile: {
+            Auth: {
               screens: {
-                ProfileMain: 'profile',
-                // Diğerleri de eklenebilir ama şu an şart değil
+                Login: 'login',
+                Signup: 'signup',
               },
             },
+            // Diğer RootNavigator rotalarını buraya ekleyebilirsiniz
           },
         },
+        // Deep link ile tetiklenecek ekranı RootNavigator'ın dışında, ana seviyede tanımlayın
+        JoinList: 'joinList/:code',
       },
-    },
-    async getInitialURL() {
-      const url = await Linking.getInitialURL();
-      return url;
-    },
-    subscribe(listener) {
-      const onReceiveURL = ({ url }) => listener(url);
-      const subscription = Linking.addEventListener('url', onReceiveURL);
-      return () => subscription.remove();
     },
   };
 
   return (
     <AuthProvider>
       <ThemeProvider>
+        {/* NavigationContainer'a fallback ekranı eklemek iyi bir pratik */}
         <NavigationContainer linking={linking} fallback={<Text>Loading navigation...</Text>}>
+          {/* JoinList ekranını RootNavigator'ın dışında tanımladığımız için
+          burada RootNavigator'ı doğrudan çağırıyoruz */}
           <RootNavigator />
         </NavigationContainer>
       </ThemeProvider>
