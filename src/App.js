@@ -14,9 +14,9 @@ export default function App() {
     prefixes: [prefix],
     config: {
       screens: {
-        // RootNavigator'ın ana ekranı buraya geliyor
+
         Root: {
-          path: '/', // Normal açılışta RootNavigator'a yönlensin
+          path: '/',
           screens: {
             App: {
               screens: {

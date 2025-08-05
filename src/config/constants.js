@@ -1,2 +1,2 @@
-export const API_BASE_URL = 'http://192.168.1.4:5000/api';
+export const API_BASE_URL = 'https://e016d24c60fe.ngrok-free.app/api';
 // export const API_BASE_URL = 'https://marketlistserver.onrender.com/api';
