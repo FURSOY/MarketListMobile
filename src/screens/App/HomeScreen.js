@@ -4,7 +4,7 @@ import { useTheme } from '../../context/ThemeContext';
 import marketListApi from '../../api/marketList';
 import { createMarketListStyles } from '../../styles/MarketListStyles';
 import { Ionicons } from '@expo/vector-icons';
-import CreateListModal from '../../components/CreateListModal';
+import CreateListMenu from '../../components/CreateListMenu';
 import EditListModal from '../../components/EditListModal';
 import MembersModal from '../../components/MembersModal';
 import ListOptionsMenu from '../../components/ListOptionsMenu';
@@ -118,23 +118,29 @@ function HomeScreen({ navigation }) {
 
         return (
             <View>
-                <TouchableOpacity style={styles.listItemContainer} onPress={() => handleListPress(item)} activeOpacity={0.8}>
+                <TouchableOpacity
+                    style={styles.listItemContainer}
+                    onPress={() => handleListPress(item)}
+                    activeOpacity={0.8}
+                >
                     <Text style={styles.listItemText}>{item.name}</Text>
                     {isOwner && (
-                        <TouchableOpacity style={styles.optionsButton} onPress={() => isMenuOpen ? handleOptionsMenuClose() : handleOptionsMenuOpen(item)}>
-                            <Entypo name="dots-three-horizontal" size={24} color={currentTheme.colors.textPrimary} />
+                        <TouchableOpacity
+                            style={styles.optionsButton}
+                            onPress={() =>
+                                isMenuOpen
+                                    ? handleOptionsMenuClose()
+                                    : handleOptionsMenuOpen(item)
+                            }
+                        >
+                            <Entypo
+                                name="dots-three-horizontal"
+                                size={24}
+                                color={currentTheme.colors.textPrimary}
+                            />
                         </TouchableOpacity>
                     )}
                 </TouchableOpacity>
-                {isMenuOpen && (
-                    <ListOptionsMenu
-                        list={item}
-                        onEdit={handleEditList}
-                        onDelete={handleDeleteList}
-                        onClose={handleOptionsMenuClose}
-                        onMembers={handleMembers}
-                    />
-                )}
             </View>
         );
     };
@@ -161,7 +167,7 @@ function HomeScreen({ navigation }) {
                         }
                     />
                 )}
-                <CreateListModal
+                <CreateListMenu
                     visible={createMenuShow}
                     onClose={handleCreateModalClose}
                     onListCreated={loadLists}
@@ -184,6 +190,16 @@ function HomeScreen({ navigation }) {
                     onClose={() => setAddMemberModalVisible(false)}
                     listId={selectedListId}
                 />
+                {optionsMenuShow && selectedList && (
+                    <ListOptionsMenu
+                        list={selectedList}
+                        onEdit={handleEditList}
+                        onDelete={handleDeleteList}
+                        onClose={handleOptionsMenuClose}
+                        onMembers={handleMembers}
+                        userData={userData}
+                    />
+                )}
             </View>
         </TouchableWithoutFeedback>
     );

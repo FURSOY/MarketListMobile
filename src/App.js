@@ -14,36 +14,10 @@ export default function App() {
     prefixes: [prefix],
     config: {
       screens: {
-
-        Root: {
-          path: '/',
-          screens: {
-            App: {
-              screens: {
-                Home: {
-                  screens: {
-                    HomeMain: 'home',
-                    MarketListDetail: 'lists/:listId',
-                  },
-                },
-                Profile: {
-                  screens: {
-                    ProfileMain: 'profile',
-                  },
-                },
-              },
-            },
-            Auth: {
-              screens: {
-                Login: 'login',
-                Signup: 'signup',
-              },
-            },
-            // Diğer RootNavigator rotalarını buraya ekleyebilirsiniz
-          },
-        },
-        // Deep link ile tetiklenecek ekranı RootNavigator'ın dışında, ana seviyede tanımlayın
-        JoinList: 'joinList/:code',
+        // Doğrudan RootNavigator'daki Stack.Screen isimlerini kullanın
+        App: 'App', // `RootNavigator` içindeki `App` Stack'i
+        Auth: 'Auth', // `RootNavigator` içindeki `Auth` Stack'i
+        JoinList: 'joinList/:code', // `RootNavigator` içindeki `JoinList` ekranı
       },
     },
   };
@@ -51,10 +25,7 @@ export default function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        {/* NavigationContainer'a fallback ekranı eklemek iyi bir pratik */}
         <NavigationContainer linking={linking} fallback={<Text>Loading navigation...</Text>}>
-          {/* JoinList ekranını RootNavigator'ın dışında tanımladığımız için
-          burada RootNavigator'ı doğrudan çağırıyoruz */}
           <RootNavigator />
         </NavigationContainer>
       </ThemeProvider>

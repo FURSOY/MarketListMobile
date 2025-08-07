@@ -1,0 +1,56 @@
+        // <Modal
+        //     animationType="slide"
+        //     transparent={true}
+        //     visible={visible}
+        //     onRequestClose={onClose}
+        // >
+        //     <View style={styles.centeredView}>
+        //         <View style={[
+        //             styles.modalView,
+        //             {
+        //                 backgroundColor: currentTheme.colors.background,
+        //                 padding: currentTheme.spacing.lg,
+        //                 borderRadius: 10,
+        //                 elevation: 5,
+        //             }
+        //         ]}>
+        //             <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+        //                 <Ionicons name="close-circle-outline" size={30} color={currentTheme.colors.primary} />
+        //             </TouchableOpacity>
+
+        //             <Text style={[styles.modalTitle, { color: currentTheme.colors.textPrimary }]}>Yeni Liste Oluştur</Text>
+
+        //             <TextInput
+        //                 style={[
+        //                     styles.input,
+        //                     {
+        //                         borderColor: currentTheme.colors.primary,
+        //                         color: currentTheme.colors.textPrimary,
+        //                         marginBottom: currentTheme.spacing.md,
+        //                     }
+        //                 ]}
+        //                 placeholder="Liste adı"
+        //                 placeholderTextColor={currentTheme.colors.textSecondary}
+        //                 value={listName}
+        //                 onChangeText={setListName}
+        //             />
+
+        //             <TouchableOpacity
+        //                 style={[
+        //                     styles.createButton,
+        //                     {
+        //                         backgroundColor: currentTheme.colors.primary,
+        //                     }
+        //                 ]}
+        //                 onPress={handleCreateList}
+        //                 disabled={loading}
+        //             >
+        //                 {loading ? (
+        //                     <ActivityIndicator color={currentTheme.colors.textOnPrimary} />
+        //                 ) : (
+        //                     <Text style={[styles.createButtonText, { color: currentTheme.colors.textOnPrimary }]}>Oluştur</Text>
+        //                 )}
+        //             </TouchableOpacity>
+        //         </View>
+        //     </View>
+        // </Modal>

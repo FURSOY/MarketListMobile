@@ -3,9 +3,8 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import { useTheme } from '../context/ThemeContext';
 import { Ionicons } from '@expo/vector-icons';
 import marketListApi from '../api/marketList';
-import Feather from '@expo/vector-icons/Feather';
 
-const ListOptionsMenu = ({ list, onEdit, onDelete, onClose, onMembers }) => {
+const ListOptionsMenu = ({ list, onEdit, onDelete, onClose, onMembers, userData }) => {
     const { currentTheme } = useTheme();
 
     const handleMembers = () => {
@@ -48,45 +47,69 @@ const ListOptionsMenu = ({ list, onEdit, onDelete, onClose, onMembers }) => {
     };
 
     return (
-        <View style={[styles.menuContainer, { backgroundColor: currentTheme.colors.surface, shadowColor: currentTheme.colors.textPrimary }]}>
-            <TouchableOpacity style={[styles.menuItem, { borderBottomColor: currentTheme.colors.border }]} onPress={handleEdit}>
-                <Ionicons name="create-outline" size={20} color={currentTheme.colors.textPrimary} />
-                <Text style={[styles.menuText, { color: currentTheme.colors.textPrimary }]}>İsmi Düzenle</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.menuItem} onPress={handleDelete}>
-                <Ionicons name="trash-outline" size={20} color={currentTheme.colors.error} />
-                <Text style={[styles.menuText, { color: currentTheme.colors.error }]}>Sil</Text>
-            </TouchableOpacity>
+        <View style={styles.menuContainer}>
+            <Text
+                style={[
+                    styles.Title,
+                    { fontWeight: currentTheme.fontWeights.bold, color: currentTheme.colors.textPrimary, fontSize: currentTheme.fontSizes.xl }
+                ]}
+            >{list.name}
+            </Text>
+            {list.ownerId === userData.id && (
+                <>
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={handleEdit}
+                    >
+                        <Ionicons name="create-outline" size={24} color={currentTheme.colors.textPrimary} />
+                        <Text style={[styles.menuText, { color: currentTheme.colors.textPrimary, fontSize: currentTheme.fontSizes.ml, fontWeight: currentTheme.fontWeights.medium }]}>İsmi Düzenle</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.menuItem}
+                        onPress={handleDelete}
+                    >
+                        <Ionicons name="trash-outline" size={24} color={currentTheme.colors.error} />
+                        <Text style={[styles.menuText, { color: currentTheme.colors.error, fontSize: currentTheme.fontSizes.ml, fontWeight: currentTheme.fontWeights.medium }]}>Sil</Text>
+                    </TouchableOpacity>
+                </>
+            )
+            }
             <TouchableOpacity style={styles.menuItem} onPress={handleMembers}>
-                <Feather name="users" size={20} color="black" />
-                <Text style={[styles.menuText, { color: currentTheme.colors.textPrimary }]}>Üyeler</Text>
+                <Ionicons name="people-outline" size={24} color={currentTheme.colors.textPrimary} />
+                <Text style={[styles.menuText, { color: currentTheme.colors.textPrimary, fontSize: currentTheme.fontSizes.ml, fontWeight: currentTheme.fontWeights.medium }]}>Üyeler</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     );
 };
 
 const styles = StyleSheet.create({
     menuContainer: {
+        backgroundColor: 'white',
+        width: "100%",
+        height: 250,
         position: 'absolute',
-        right: 40,
-        top: 40,
-        borderRadius: 8,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        elevation: 5,
-        zIndex: 1000,
-        width: 150,
+        bottom: 0,
+        left: 0,
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        paddingTop: 10,
+    },
+    Title: {
+        textAlign: 'center',
+        marginBottom: 10,
     },
     menuItem: {
+        paddingLeft: 15,
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 12,
+        height: 65,
+        borderBottomWidth: 0.5,
+        borderColor: '#ccc',
     },
     menuText: {
-        marginLeft: 10,
-        fontSize: 16,
-    },
+        marginLeft: 10
+    }
 });
 
 export default ListOptionsMenu;
